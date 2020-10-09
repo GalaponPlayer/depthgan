@@ -21,6 +21,7 @@ class WGanArchitecture(BaseArchitecture):
         if args.mode == 'train':
             self.D = define_D(args)
             self.D = self.D.to(self.device)
+            print("wgan_arch device " + self.device)
 
             self.criterionMonoDepth = define_generator_loss(args)
             self.criterionMonoDepth = self.criterionMonoDepth.to(self.device)

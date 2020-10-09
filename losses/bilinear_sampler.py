@@ -41,6 +41,10 @@ def apply_disparity(input_images, x_offset, wrap_mode='border', tensor_type='tor
 
     # Now we want to sample pixels with indicies shifted by disparity in X direction
     # For that we convert disparity from % to pixels and add to X indicies
+    print('x type : ' + str(x.device))
+    print('x_offset type : ' + str(x_offset.device))
+    # print('width type : ' + str(width.device))
+    x = x.to(torch.device("cuda"))
     x = x + x_offset.contiguous().view(-1) * width
     # Make sure we don't go outside of image
     x = torch.clamp(x, 0.0, width - 1 + 2 * edge_size)

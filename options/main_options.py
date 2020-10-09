@@ -40,4 +40,6 @@ class MainOptions(BaseOptions):
         parser.add_argument('--load_final',         type=boolstr,  help='Load final or best trained model', default=True)
         parser.add_argument('--test_time',          type=boolstr, help='Print the time of inference', default=False)
 
+        parser.add_argument('--left_view',          type=str,     help='path to left view from which wanna reconstruct right view', default='')
+
         return parser

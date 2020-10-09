@@ -32,6 +32,7 @@ class BaseArchitecture:
 
         self.G = define_G(args)
         self.G = self.G.to(self.device)
+        print("base_arch device " + self.device)
         if args.use_multiple_gpu:
             self.G = torch.nn.DataParallel(self.G)
         print("G [{}] initiated with {} trainable parameters".format(args.generator_model, self.num_parameters))
@@ -44,6 +45,8 @@ class BaseArchitecture:
         # If not doing test runs during train times (nearly always).
         if not train_test:
             left = data['left_image'].squeeze()
+            print('In base architecture fit')
+            print(left.shape)
             return self.G(left)
         # Only if also doing tes runs doing train time.
         flipped_left = data['flipped_left_image']

@@ -84,3 +84,9 @@ If this work was useful for your research, please consider citing:
 }
 ```
 
+## Reconstruct right view from left view image
+To reconstruct right view from left view image using estimated disparity, the network will output the right view image in the current directory.
+
+```shell
+python reconstruct_right.py --left_view [path to left view] --model_name [model name] --mode rec_right --data_dir [some directory]
+```

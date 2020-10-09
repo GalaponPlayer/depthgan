@@ -8,6 +8,9 @@ from options import MainOptions
 from data_loader import prepare_dataloader
 from architectures import create_architecture
 
+#utils import
+import inspect
+
 
 def train(args):
     """ Function used for training any of the architectures, given an input parse.
@@ -42,6 +45,8 @@ def train(args):
     model = create_architecture(args)
     model.set_data_loader(loader)
 
+    print('data loader is set')
+
     if not args.resume:
         # We keep track of the aggregated losses per epoch in a dict. For
         # now the pre-training train loss is set to zero. The pre-training
@@ -56,8 +61,10 @@ def train(args):
         best_val_loss = min([model.losses[epoch]['val']['G'] for epoch in model.losses.keys()])
 
     running_val_loss = 0.0
+    print('Now, training starts')
 
     for epoch in range(model.start_epoch, args.epochs):
+        print('Epoch {} is beginning...'.format(epoch))
         model.update_learning_rate(epoch, args.learning_rate)
 
         c_time = time.time()
@@ -79,6 +86,8 @@ def train(args):
         if is_best:
             best_val_loss = running_val_loss
         model.save_checkpoint(epoch, is_best, best_val_loss)
+
+        print('Epoch {} ended'.format(epoch))
 
     print('Finished Training. Best validation loss:\t{:.3f}'.format(best_val_loss))
 
@@ -121,7 +130,16 @@ def test(args):
 
             t_start = time.time()
             # Do a forward pass
+            left_view = data['left_image'].squeeze()
+            print(left_view.shape)
+            print('data num of keys ' + str(len(data)))
+            print('data keys' + str(data.keys()))
             disps = model.fit(data)
+            print('disps tuple dims ' + str(len(disps)))
+            print('disps0 dims ' + str(disps[0].shape))
+            print('disps1 dims ' + str(disps[1].shape))
+            print('disps2 dims ' + str(disps[2].shape))
+            print('disps3 dims ' + str(disps[3].shape))
             # Some architectures output a single disparity, not a tuple of 4 disparities.
             disps = disps[0][:, 0, :, :] if isinstance(disps, tuple) else disps.squeeze()
 
