@@ -6,7 +6,7 @@ from networks import define_D, define_generator_loss, define_discriminator_loss,
 from utils.image_pool import ImagePool
 
 
-class VanillaGanSingleArchitecture(BaseArchitecture):
+class GanSingleArchitecture(BaseArchitecture):
 
     def __init__(self, args):
         super().__init__(args)

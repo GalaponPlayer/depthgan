@@ -1,0 +1,1 @@
+python main.py --data_dir data/kitti/ --model_name wgan_obj_from-wgan1 --architecture wgan --resume saved_models/wgan1/model_best.pth.tar

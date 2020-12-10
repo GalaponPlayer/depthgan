@@ -45,8 +45,6 @@ class BaseArchitecture:
         # If not doing test runs during train times (nearly always).
         if not train_test:
             left = data['left_image'].squeeze()
-            print('In base architecture fit')
-            print(left.shape)
             return self.G(left)
         # Only if also doing tes runs doing train time.
         flipped_left = data['flipped_left_image']
@@ -95,6 +93,10 @@ class BaseArchitecture:
             self.losses[epoch] = {}
         self.losses[epoch]['train' if train else 'val'] = {name: 0.0 for name in self.loss_names}
 
+        if epoch not in self.rec_losses:
+            self.rec_losses[epoch] = {}
+        self.rec_losses[epoch]['train' if train else 'val'] = {name: 0.0 for name in self.rec_loss_names}
+
     def add_running_loss_train(self, epoch):
         for loss_name in self.loss_names:
             self.losses[epoch]['train'][loss_name] += getattr(self, 'loss_{}'.format(loss_name)).item()
@@ -108,6 +110,8 @@ class BaseArchitecture:
         if train:
             for loss_name in self.loss_names:
                 self.losses[epoch]['train'][loss_name] /= n_img / self.args.batch_size
+            for rec_loss_name in self.rec_loss_names:
+                self.rec_losses[epoch]['train'][rec_loss_name] /= n_img / self.args.batch_size
         # Because val batch size will always be 1.
         else:
             for loss_name in self.loss_names:
@@ -141,7 +145,7 @@ class BaseArchitecture:
                 state_dict = torch.load(load_path, map_location=self.device)
                 if hasattr(state_dict, '_metadata'):
                     del state_dict._metadata
-                net.load_state_dict(state_dict)
+                net.load_state_dict(state_dict, strict=False)
 
     def save_best_networks(self):
         path_to_best_checkpoint = os.path.join(self.model_store_path, 'model_best.pth.tar')
@@ -211,6 +215,7 @@ class BaseArchitecture:
             print("=> no checkpoint found at '{}'".format(self.args.resume))
 
     def remove_checkpoints(self):
+        print(self.model_store_path)
         for file_name in os.listdir(self.model_store_path):
             path_to_possible_checkpoint = os.path.join(self.model_store_path, file_name)
             if 'checkpoint' in file_name and os.path.isfile(path_to_possible_checkpoint):

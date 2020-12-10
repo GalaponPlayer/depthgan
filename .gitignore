@@ -7,6 +7,9 @@ output/
 !output/.gitkeep
 saved_models/
 !saved_models/.gitkeep
+sample_kitti_obj/
+kishida/
+KITTI_obj/
 
 # The file lists
 utils/filenames/*

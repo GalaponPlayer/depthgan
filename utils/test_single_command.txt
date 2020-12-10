@@ -1,0 +1,2 @@
+python reconstruct_right_simple.py --left_view [path to left view] --model_name [model name] --mode rec_right --data_dir [some directory]
+

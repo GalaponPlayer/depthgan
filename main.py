@@ -7,6 +7,7 @@ from utils import *
 from options import MainOptions
 from data_loader import prepare_dataloader
 from architectures import create_architecture
+import tensorboardX as tbx
 
 #utils import
 import inspect
@@ -15,6 +16,8 @@ import inspect
 def train(args):
     """ Function used for training any of the architectures, given an input parse.
     """
+    tb_dir = os.path.join("saved_models", args.model_name, "tensorboard_" + args.model_name)
+    writer = tbx.SummaryWriter(tb_dir)
 
     def validate(epoch):
         model.to_test()
@@ -31,6 +34,7 @@ def train(args):
             model.set_input(data)
             model.forward()
             model.add_running_loss_val(epoch)
+
 
         if 'wgan' not in args.architecture:
             torch.set_grad_enabled(True)
@@ -78,7 +82,13 @@ def train(args):
         validate(epoch)
 
         # Print an update of training, val losses. Possibly also do full evaluation of depth maps.
-        print_epoch_update(epoch, time.time() - c_time, model.losses)
+        print_epoch_update(epoch, time.time() - c_time, model.losses, model.rec_losses)
+
+        for loss_name in model.loss_names:
+            writer.add_scalar('GAN/' + loss_name, model.losses[epoch]['train'][loss_name], epoch)
+
+        for loss_name in model.rec_loss_names:
+            writer.add_scalar('Reconstruction/' + loss_name, model.rec_losses[epoch]['train'][loss_name], epoch)
 
         # Make a checkpoint, so training can be resumed.
         running_val_loss = model.losses[epoch]['val']['G']
@@ -97,6 +107,7 @@ def train(args):
         model.save_best_networks()
 
     model.save_losses()
+    writer.close()
 
 
 def test(args):
@@ -131,15 +142,7 @@ def test(args):
             t_start = time.time()
             # Do a forward pass
             left_view = data['left_image'].squeeze()
-            print(left_view.shape)
-            print('data num of keys ' + str(len(data)))
-            print('data keys' + str(data.keys()))
             disps = model.fit(data)
-            print('disps tuple dims ' + str(len(disps)))
-            print('disps0 dims ' + str(disps[0].shape))
-            print('disps1 dims ' + str(disps[1].shape))
-            print('disps2 dims ' + str(disps[2].shape))
-            print('disps3 dims ' + str(disps[3].shape))
             # Some architectures output a single disparity, not a tuple of 4 disparities.
             disps = disps[0][:, 0, :, :] if isinstance(disps, tuple) else disps.squeeze()
 

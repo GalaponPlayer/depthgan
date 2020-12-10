@@ -46,6 +46,10 @@ class WGanArchitecture(BaseArchitecture):
         self.loss_names = ['G', 'G_MonoDepth', 'G_GAN', 'D', 'D_Wasserstein']
         self.losses = {}
 
+        # for tensoboardX
+        self.rec_loss_names = ['image', 'disp_gradient', 'lr', 'occl']
+        self.rec_losses = {}
+
         if self.args.resume:
             self.load_checkpoint()
 
@@ -119,6 +123,11 @@ class WGanArchitecture(BaseArchitecture):
         self.losses[self.current_epoch]['train']['G'] += self.loss_G.item()
         self.losses[self.current_epoch]['train']['G_GAN'] += self.loss_G_GAN.item()
         self.losses[self.current_epoch]['train']['G_MonoDepth'] += self.loss_G_MonoDepth.item()
+
+        self.rec_losses[self.current_epoch]['train']['image'] += self.criterionMonoDepth.image_loss.item()
+        self.rec_losses[self.current_epoch]['train']['disp_gradient'] += self.criterionMonoDepth.disp_gradient_loss.item()
+        self.rec_losses[self.current_epoch]['train']['lr'] += self.criterionMonoDepth.lr_loss.item()
+        self.rec_losses[self.current_epoch]['train']['occl'] += self.criterionMonoDepth.occl_loss.item()
 
     def optimize_parameters(self):
         # Update D.

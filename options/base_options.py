@@ -21,7 +21,7 @@ class BaseOptions:
         parser.add_argument('--architecture',       type=str,   help='The architecture from which exp to run.', default='monodepth')
         parser.add_argument('--mode',               type=str,   help='mode: train or test', default='train')
         parser.add_argument('--split',              type=str,   help='data split, kitti or eigen', default='eigen')
-        parser.add_argument('--dataset',            type=str,   help='dataset to train on kitti or cityscapes or both', default='kitti')
+        parser.add_argument('--dataset',            type=str,   help='dataset to train on kitti or cityscapes or both or kitti_obj', default='kitti')
 
         parser.add_argument('--data_dir',           type=str,   help='path to the data directory', required=True)
         parser.add_argument('--output_dir',         type=str,   help='where to save the disparities', default='output/')

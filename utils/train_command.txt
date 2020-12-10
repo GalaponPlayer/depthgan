@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python main.py --data_dir /mnt/othel-public/sig4data/KITTI_object/training --model_name [model_name] --architecture [arch_name] --dataset kitti_obj

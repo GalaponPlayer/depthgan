@@ -1,0 +1,1 @@
+python check_model.py --model_name wgan_resnet50md_obj_scratch --mode rec_right --data_dir . --generator_model resnet50

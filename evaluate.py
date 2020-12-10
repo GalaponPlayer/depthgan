@@ -3,6 +3,8 @@ from options import EvaluateOptions
 from utils.evaluation_utils import *
 from config_parameters import *
 
+import numpy as np
+
 
 def evaluate_eigen(args, verbose=True):
     pred_disparities = np.load(args.predicted_disp_path)
@@ -13,8 +15,15 @@ def evaluate_eigen(args, verbose=True):
     assert_str = "Only {} disparities recovered out of required {}".format(len(pred_disparities), num_samples)
     assert len(pred_disparities) == num_samples, assert_str
 
-    gt_files, gt_calib, im_sizes, im_files, cams = read_file_data(test_files, args.data_dir)
+    if args.jpg:
+        print('files are png images.')
+        test_files = [os.path.splitext(test_file.split()[0])[0] + '.png' + ' ' + os.path.splitext(test_file.split()[1])[0] + '.png' for test_file in test_files]
 
+    print('In evaluate eugen')
+    print(test_files[0])
+    gt_files, gt_calib, im_sizes, im_files, cams = read_file_data(test_files, args.data_dir)
+    print(len(cams))
+    print(len(gt_files))
     gt_depths = []
     pred_depths = []
     for t_id in range(num_samples):

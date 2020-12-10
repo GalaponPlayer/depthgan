@@ -13,20 +13,25 @@ def post_process_disparity(disp):
     return r_mask * l_disp + l_mask * r_disp + (1.0 - l_mask - r_mask) * m_disp
 
 
-def print_epoch_update(epoch, time, losses):
+def print_epoch_update(epoch, time, losses, rec_losses):
     # Print update for this epoch.
     train_losses = losses[epoch]['train']
     val_losses = losses[epoch]['val']
+    rec_losses_ = rec_losses[epoch]['train']
 
     train_loss_string = 'train: \t['
     val_loss_string = 'val:   \t['
+    rec_loss_string = 'reconstruction: \t['
     for key in train_losses.keys():
         train_loss_string += "  {}: {:.4f}  ".format(key, train_losses[key])
         val_loss_string += "  {}: {:.4f}  ".format(key, val_losses[key])
+    
+    for key in rec_losses_.keys():
+        rec_loss_string += "  {}: {:.4f}  ".format(key, rec_losses_[key])
 
-    update_print_statement = 'Epoch: {}\t | train: {:.2f}\t | val: {:.2f}\t | time: {:.2f}\n  {}]\n  {}]'
+    update_print_statement = 'Epoch: {}\t | train: {:.2f}\t | val: {:.2f}\t | time: {:.2f}\n  {}]\n  {}]\n  {}]'
     print(update_print_statement.format(epoch, losses[epoch]['train']['G'], losses[epoch]['val']['G'],
-                                        time, train_loss_string, val_loss_string))
+                                        time, train_loss_string, val_loss_string, rec_loss_string))
     return
 
 

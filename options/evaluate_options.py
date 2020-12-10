@@ -16,5 +16,5 @@ class EvaluateOptions(BaseOptions):
         parser.add_argument('--max_depth',              type=float,     help='maximum depth for evaluation', default=80)
         parser.add_argument('--eigen_crop',             type=boolstr,   help='if set, crops according to Eigen NIPS14', default=False)
         parser.add_argument('--garg_crop',              type=boolstr,   help='if set, crops according to Garg  ECCV16', default=True)
-
+        parser.add_argument('--jpg',                    type=boolstr,   help='for the difference of jpg and png', default=False) 
         return parser

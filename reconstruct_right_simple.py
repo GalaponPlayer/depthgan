@@ -8,6 +8,7 @@ from utils import *
 from options import MainOptions
 from data_loader import prepare_dataloader, transforms
 from architectures import create_architecture
+import scipy.misc
 
 # kishida imports
 from PIL import Image
@@ -115,6 +116,11 @@ def reconstruct_right(args):
         # Using estimated disparity, apply it to left view and obtain right view
         print('reconstructing right view from left view')
         fake_right = fake_loss.generate_image_right(left_image.to(args.device), disp_right_est)
+        disp_to_img = scipy.misc.imresize(disp_right_est[0].squeeze(), [input_height, input_width])
+        print(type(disp_to_img))
+        print(disp_to_img.shape)
+        print(disp_to_img[100:110, 100:110])
+        Image.fromarray(disp_to_img).save('./output/000031_disp.jpg')
 
         # convert Tensor(fake_right) to PIL image and save it!
         print('Saving reconstructed right view...')

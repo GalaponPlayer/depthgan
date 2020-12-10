@@ -1,7 +1,7 @@
 import importlib
 
 from torch.utils.data import DataLoader, ConcatDataset
-from config_parameters import KITTI_PATH, EIGEN_PATH, CITYSCAPES_PATH
+from config_parameters import KITTI_PATH, EIGEN_PATH, CITYSCAPES_PATH, KITTI_OBJECT_PATH
 from data_loader.data_loader import StreetMonoLoader as StreetLoader
 
 
@@ -30,6 +30,9 @@ def obtain_correct_path_to_files(args, data_mode):
         return path_to_dataset_file_names.format(data_mode)
     elif args.dataset == 'cityscapes':
         path_to_dataset_file_names = CITYSCAPES_PATH
+        return path_to_dataset_file_names.format(data_mode)
+    elif args.dataset == 'kitti_obj':
+        path_to_dataset_file_names = KITTI_OBJECT_PATH
         return path_to_dataset_file_names.format(data_mode)
     elif args.dataset == 'both' and args.split == 'kitti':
         path_to_dataset_file_names_kitti = KITTI_PATH.format(data_mode)
@@ -65,6 +68,16 @@ def prepare_dataloader(args, data_mode, verbose=True):
             do_augmentation=args.do_augmentation,
             size=(args.input_height, args.input_width))
 
+        dataset = StreetLoader(args.data_dir, data_paths_file, data_mode,
+                               args.train_ratio, transform=data_transform)
+    elif args.dataset == 'kitti_obj':
+        data_paths_file = obtain_correct_path_to_files(args, data_mode)
+        data_transform = image_transforms_kitti(
+            mode=data_mode,
+            augment_parameters=args.augment_parameters,
+            do_augmentation=args.do_augmentation,
+            size=(args.input_height, args.input_width))
+        
         dataset = StreetLoader(args.data_dir, data_paths_file, data_mode,
                                args.train_ratio, transform=data_transform)
     else:

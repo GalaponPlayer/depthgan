@@ -401,7 +401,7 @@ class ResnetModel(nn.Module):
 
 
 class ResNet50Pilzer(nn.Module):
-    def __init__(self, num_out_layers=1, normalize=None):
+    def __init__(self, num_out_layers=2, normalize=None):
         super(ResNet50Pilzer, self).__init__()
 
         filters = [256, 512, 1024, 2048]

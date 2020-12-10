@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from PIL import Image
 
 from torch.utils.data import Dataset
@@ -17,6 +18,10 @@ class StreetMonoLoader(Dataset):
             all_split_paths = restricted_creator.all_files_paths
 
         left_right_path_lists = [lst for lst in zip(*all_split_paths)]
+        left_right_path_lists_np = np.array(left_right_path_lists)
+        print('SHAPE OF left_right_path_lists')
+        print(left_right_path_lists_np.shape)
+        print(left_right_path_lists_np[0][0])
 
         left_fnames = list(left_right_path_lists[0])
         self.left_paths = sorted([os.path.join(data_dir, fname) for fname in left_fnames])

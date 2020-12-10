@@ -1,0 +1,4 @@
+wgan
+pure_wgan
+pure_gan_single
+gan_single
